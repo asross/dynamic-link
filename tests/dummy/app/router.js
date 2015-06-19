@@ -6,6 +6,9 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.resource('thingies', function() {
+    this.route('show', { path: ':id' });
+  });
 });
 
 export default Router;

@@ -2,11 +2,12 @@ import Ember from 'ember';
 import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 
-var App;
+var App, controller;
 
 module('Dynamic link', {
   setup: function() {
     App = startApp();
+    controller = App.__container__.lookup('controller:application');
   },
 
   teardown: function() {
@@ -15,8 +16,6 @@ module('Dynamic link', {
 });
 
 test('vanilla dynamic link with basic parameters passed in from the controller', function(assert) {
-  var controller = App.__container__.lookup('controller:application');
-
   visit('/');
 
   andThen(function() {
@@ -31,5 +30,38 @@ test('vanilla dynamic link with basic parameters passed in from the controller',
     assert.equal(find('#dynamic-link a').attr('href'), '/foo', "href should be settable through params.href");
     assert.equal(find('#dynamic-link a').attr('title'), 'bar', "title should be settable through params.title");
     assert.ok(find('#dynamic-link a').hasClass('baz'), "class should be settable through params.className");
+  });
+});
+
+test('dynamic link that uses routes', function(assert) {
+  visit('/');
+
+  controller.set('dynamicLinkParams', { route: 'thingies.index' });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('href'), '/thingies', "href should be settable via route");
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'thingies.index', queryParams: { hello: 'world' } });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('href'), '/thingies?hello=world', "query params should be settable via route params");
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'thingies.show', model: 1, queryParams: { baz: 'bat' } });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('href'), '/thingies/1?baz=bat', "query params should be settable via route params");
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(currentRouteName(), 'thingies.show', "clicking on the link should transition routes");
+    assert.equal(currentURL(), 'thingies/1', "clicking on the link should transition to the right model");
   });
 });
