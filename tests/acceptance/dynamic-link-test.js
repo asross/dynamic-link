@@ -62,6 +62,24 @@ test('dynamic link that uses routes', function(assert) {
 
   andThen(function() {
     assert.equal(currentRouteName(), 'thingies.show', "clicking on the link should transition routes");
-    assert.equal(currentURL(), 'thingies/1', "clicking on the link should transition to the right model");
+    assert.equal(currentURL(), '/thingies/1', "clicking on the link should transition to the right model");
+  });
+});
+
+test('dynamic link with actions', function(assert) {
+  visit('/');
+
+  controller.set('dynamicLinkParams', { action: 'toggleSomething', href: '/thingies' });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('href'), '/thingies', "link with action should still be able to have an href");
+    assert.equal(controller.get('something'), false, 'sanity check');
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(controller.get('something'), true, "clicking on an action link should trigger that action");
+    assert.equal(currentRouteName(), "index", "clicking on an action link should not change the route");
   });
 });
