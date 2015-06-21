@@ -28,8 +28,8 @@ Or you can pass them in via a `params` object:
 export default Ember.Controller.extend({
   linksParams: Ember.computed('model', 'someProperty', function() {
     return [{
-      route: "todos."+(@get('model') ? 'show' : 'index'),
-      text: "View "+(@get('model') ? "todo" || "all todos"),
+      route: 'todos.'+(@get('model') ? 'show' : 'index'),
+      text: 'View ' + (@get('model') ? 'todo' : 'all todos'),
       model: @get('model'),
       queryParams: { foo: 'bar' }
     }, {
@@ -38,7 +38,7 @@ export default Ember.Controller.extend({
     }, {
       action: 'toggleSomeProperty',
       className: 'switch',
-      text: "Turn it "+(@get('someProperty') ? "off" : "on")
+      text: 'Turn it ' + (@get('someProperty') ? 'off' : 'on')
     }];
   });
 });
@@ -55,9 +55,9 @@ export default Ember.Controller.extend({
 Which should produce (assuming `model` is truthy and `someProperty` is not):
 
 ```html
-<a href="/todos/1?foo=bar">View todo</a>
-<a href="http://some.site">Buy product</a>
-<a href="#" class="switch">Turn it on</a>
+<a href='/todos/1?foo=bar'>View todo</a>
+<a href='http://some.site'>Buy product</a>
+<a href='#' class='switch'>Turn it on</a>
 ```
 
 Clicking on the route-based link will perform an Ember route transition without refreshing the page, clicking on the action link will bubble the action properly, and clicking on the literal link will work normally.
