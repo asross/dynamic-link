@@ -28,9 +28,11 @@ export default Ember.Component.extend({
     var args = [this.get('route')];
 
     if (this.get('model')) {
-      args.push(this.get('model'));
-    } else if (this.get('models')) {
-      args = args.concat(this.get('models'));
+      if (this.get('model') instanceof Array) {
+        args = args.concat(this.get('model'));
+      } else {
+        args.push(this.get('model'));
+      }
     }
 
     if (this.get('queryParams')) {

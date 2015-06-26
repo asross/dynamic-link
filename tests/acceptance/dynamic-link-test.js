@@ -69,7 +69,7 @@ test('dynamic link that uses routes', function(assert) {
 test('dynamic link using routes with multiple dynamic segments', function(assert) {
   visit('/');
 
-  controller.set('dynamicLinkParams', { route: 'photo.comment', models: [1, { id: 2 }] });
+  controller.set('dynamicLinkParams', { route: 'photo.comment', model: [1, { id: 2 }] });
 
   andThen(function() {
     assert.equal(find('#dynamic-link a').attr('href'), '/photos/1/comments/2', "should be able to pass multiple models");
