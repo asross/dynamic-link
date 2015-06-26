@@ -11,7 +11,7 @@ ember install dynamic-link
 
 ## Usage
 
-`dynamic-link` accepts parameters for `route`, `action`, `model`, `models`, `queryParams`, and `href`. It uses these parameters to generate the `<a>` tag's href and determine what happens when it is clicked.
+`dynamic-link` accepts parameters for `route`, `action`, `model`, `models`, `queryParams`, and `href`. It uses these parameters to generate the `<a>` tag's `href` and determine what happens when it is clicked.
 
 It also supports the html attributes `title`, `rel`, `target`, and `class` either directly or via `className`.
 
@@ -54,36 +54,34 @@ export default Ember.Controller.extend({
 {{/each}}
 ```
 
-Which would produce either
+This will produce either
 
 ```html
 <a href='#' class='cancel-link'>Cancel</a>
 <a href='#' class='submit-link'>Done</a>
 ```
 
-if `editMode` was true, or
+if `editMode` is true, or else
 
 ```html
 <a href='https://corporate-site.com' target='_blank'>Home</a>
 <a href='/users/1/edit'>Edit Profile</a>
 ```
 
-if `currentUser` was present (with an `id` of 1), or
+if `currentUser` is present (with an `id` of 1), or else
 
 ```html
 <a href='https://corporate-site.com' target='_blank'>Home</a>
 <a href='/sign_in?foo=bar'>Sign In</a>
 ```
 
-if not.
-
-Clicking on route-based links will perform Ember route transitions without refreshing the page, clicking action links will bubble actions properly, and clicking on literal links will as normal.
+Clicking the route-based links will transition the route without refreshing the page, while clicking action links will bubble actions properly. Literal links will work normally.
 
 ### Passing Params Directly
 
-Note that in addition to being able to pass all of these parameters in via the `params` hash, you can also pass them in directly:
+Note that in addition to being able to pass all of these parameters in via the `params` object, you can also pass them in directly:
 
-```
+```hbs
 {{dynamic-link route=someRoute model=someModel queryParams=someQueryParams}}
 ```
 
@@ -91,26 +89,44 @@ If any of the parameters are falsey, they will be ignored.
 
 ### Multiple Dynamic Segments
 
-You can use `dynamic-link` with multiple dynamic segments by passing in a list of models and/or ids to `models` or `params.models`. For example,
+You can use `dynamic-link` with multiple dynamic segments by passing in an array of models and/or ids to `model` or `params.model`. For example,
 
 ```js
 export default Ember.Controller.extend({
-  modelChain: Ember.computed('photo', 'comment', 'reply', {
-    return [this.get('photo'), this.get('comment'), this.get('reply')];
+  commentLinkParams: Ember.computed('photo.comment', function() {
+    if (this.get('photo.comment')) {
+      return {
+        route: 'photo.comment.edit',
+        model: [this.get('photo'), this.get('photo.comment')],
+        text: 'Edit Comment'
+      };
+    } else {
+      return {
+        route: 'photo.comments.new',
+        model: this.get('photo'),
+        text: 'Add Comment'
+      };
+    }
   });
 });
 ```
 
 ```hbs
-{{#dynamic-link route='photo.comment.reply' models=modelChain}}
-  View Reply
+{{#dynamic-link params=commentLinkParams}}
+  {{commentLinkParams.text}}
 {{/dynamic-link}}
 ```
 
 might produce
 
 ```html
-<a href="/photos/1/comments/2/replies/3">View Reply</a>
+<a href="/photos/1/comments/2/edit">Edit Comment</a>
+```
+
+or just
+
+```html
+<a href="/photos/1/comments/new">Add Comment</a>
 ```
 
 ## Running Tests
