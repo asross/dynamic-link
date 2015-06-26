@@ -1,6 +1,6 @@
 {
   "name": "dynamic-link",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Ember CLI addon for the dynamic-link component, a more flexible version of link-to.",
   "directories": {
     "doc": "doc",
