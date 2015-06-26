@@ -1,66 +1,117 @@
 # Dynamic-link
 
-Ember CLI addon for the `dynamic-link` component, a more flexible version of `link-to`.
+`dynamic-link` is an alternative to the `link-to` helper that provides more flexibility for dynamic parameters, including actions and literal hrefs.
 
 ## Installation
 
-To install simply run:
+To install, run:
 ```
 ember install dynamic-link
 ```
 
 ## Usage
 
-`dynamic-link` allows you to generate links based on dynamic parameters, which may trigger ember route transitions, ember actions, or normal URL transitions.
+`dynamic-link` accepts parameters for `route`, `action`, `model`, `models`, `queryParams`, and `href`. It uses these parameters to generate the `<a>` tag's href and determine what happens when it is clicked.
 
-You can pass in these parameters directly:
-```hbs
-{{dynamic-link route='todos.index'}}
-{{dynamic-link route='todos.show' model=todo}}
-{{dynamic-link route=dynamicRoute model=possiblyNullDynamicModel queryParams=possiblyNullDynamicQueryParams}}
-{{dynamic-link action=dynamicAction}}
-{{dynamic-link href=literalHref title=literalTitle}}
-```
+It also supports the html attributes `title`, `rel`, `target`, and `class` either directly or via `className`.
 
-Or you can pass them in via a `params` object:
+This is helpful, for example, when implementing breadcrumbs or navbars, with lists of links that freely mix Ember routes, actions, and literal hrefs:
 
 ```js
+// .js
 export default Ember.Controller.extend({
-  linksParams: Ember.computed('model', 'someProperty', function() {
-    return [{
-      route: 'todos.'+(@get('model') ? 'show' : 'index'),
-      text: 'View ' + (@get('model') ? 'todo' : 'all todos'),
-      model: @get('model'),
-      queryParams: { foo: 'bar' }
-    }, {
-      href: 'http://some.site',
-      text: 'Buy product'
-    }, {
-      action: 'toggleSomeProperty',
-      className: 'switch',
-      text: 'Turn it ' + (@get('someProperty') ? 'off' : 'on')
-    }];
-  });
+  editMode: false,
+  currentUser: null,
+
+  linkBar: Ember.computed('editMode', 'currentUser', function() {
+    if (this.get('editMode')) {
+      return [
+        { action: 'cancelEdit', className: 'cancel-link', text: 'Cancel' },
+        { action: 'saveChanges', className: 'submit-link', text: 'Done' }
+      ];
+    } else {
+      return [{
+        href: 'https://corporate-site.com',
+        target: '_blank',
+        text: 'Home'
+      }, {
+        route: this.get('currentUser') ? 'user.edit' : 'sign-in',
+        model: this.get('currentUser'),
+        text: this.get('currentUser') ? 'Edit Profile' : 'Sign In',
+        queryParams: this.get('currentUser') ? null : { foo: 'bar' }
+      }];
+    }
+  })
 });
 ```
 
 ```hbs
-{{#each params in linkParams}}
+{{!-- .hbs --}}
+{{#each linkParams in linkBar}}
   {{#dynamic-link params=linkParams}}
     {{linkParams.text}}
   {{/dynamic-link}}
 {{/each}}
 ```
 
-Which should produce (assuming `model` is truthy and `someProperty` is not):
+Which would produce either
 
 ```html
-<a href='/todos/1?foo=bar'>View todo</a>
-<a href='http://some.site'>Buy product</a>
-<a href='#' class='switch'>Turn it on</a>
+<a href='#' class='cancel-link'>Cancel</a>
+<a href='#' class='submit-link'>Done</a>
 ```
 
-Clicking on the route-based link will perform an Ember route transition without refreshing the page, clicking on the action link will bubble the action properly, and clicking on the literal link will work normally.
+if `editMode` was true, or
+
+```html
+<a href='https://corporate-site.com' target='_blank'>Home</a>
+<a href='/users/1/edit'>Edit Profile</a>
+```
+
+if `currentUser` was present (with an `id` of 1), or
+
+```html
+<a href='https://corporate-site.com' target='_blank'>Home</a>
+<a href='/sign_in?foo=bar'>Sign In</a>
+```
+
+if not.
+
+Clicking on route-based links will perform Ember route transitions without refreshing the page, clicking action links will bubble actions properly, and clicking on literal links will as normal.
+
+### Passing Params Directly
+
+Note that in addition to being able to pass all of these parameters in via the `params` hash, you can also pass them in directly:
+
+```
+{{dynamic-link route=someRoute model=someModel queryParams=someQueryParams}}
+```
+
+If any of the parameters are falsey, they will be ignored.
+
+### Multiple Dynamic Segments
+
+You can use `dynamic-link` with multiple dynamic segments by passing in a list of models and/or ids to `models` or `params.models`. For example,
+
+```js
+export default Ember.Controller.extend({
+  modelChain: Ember.computed('photo', 'comment', 'reply', {
+    return [this.get('photo'), this.get('comment'), this.get('reply')];
+  });
+});
+```
+
+```hbs
+{{#dynamic-link route='photo.comment.reply' models=modelChain}}
+  View Reply
+{{/dynamic-link}}
+```
+
+might produce
+
+```html
+<a href="/photos/1/comments/2/replies/3">View Reply</a>
+```
 
 ## Running Tests
 
