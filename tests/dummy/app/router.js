@@ -6,8 +6,11 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.resource('thingies', function() {
-    this.route('show', { path: ':id' });
+  this.resource("photos", function() {
+    this.resource("photo", { path: "/:photo_id" }, function() {
+      this.route("comments");
+      this.route("comment", { path: "/comments/:comment_id" });
+    });
   });
 });
 

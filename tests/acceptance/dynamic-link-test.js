@@ -36,33 +36,50 @@ test('vanilla dynamic link with basic parameters passed in from the controller',
 test('dynamic link that uses routes', function(assert) {
   visit('/');
 
-  controller.set('dynamicLinkParams', { route: 'thingies.index' });
+  controller.set('dynamicLinkParams', { route: 'photos' });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('href'), '/thingies', "href should be settable via route");
+    assert.equal(find('#dynamic-link a').attr('href'), '/photos', "href should be settable via route");
   });
 
   andThen(function() {
-    controller.set('dynamicLinkParams', { route: 'thingies.index', queryParams: { hello: 'world' } });
+    controller.set('dynamicLinkParams', { route: 'photos', queryParams: { hello: 'world' } });
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('href'), '/thingies?hello=world', "query params should be settable via route params");
+    assert.equal(find('#dynamic-link a').attr('href'), '/photos?hello=world', "query params should be settable via route params");
   });
 
   andThen(function() {
-    controller.set('dynamicLinkParams', { route: 'thingies.show', model: 1, queryParams: { baz: 'bat' } });
+    controller.set('dynamicLinkParams', { route: 'photo', model: 1, queryParams: { baz: 'bat' } });
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('href'), '/thingies/1?baz=bat', "query params should be settable via route params");
+    assert.equal(find('#dynamic-link a').attr('href'), '/photos/1?baz=bat', "query params should be settable via route params");
   });
 
   click('#dynamic-link a');
 
   andThen(function() {
-    assert.equal(currentRouteName(), 'thingies.show', "clicking on the link should transition routes");
-    assert.equal(currentURL(), '/thingies/1', "clicking on the link should transition to the right model");
+    assert.equal(currentRouteName(), 'photo.index', "clicking on the link should transition routes");
+    assert.equal(currentURL(), '/photos/1', "clicking on the link should transition to the right model");
+  });
+});
+
+test('dynamic link using routes with multiple dynamic segments', function(assert) {
+  visit('/');
+
+  controller.set('dynamicLinkParams', { route: 'photo.comment', models: [1, { id: 2 }] });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('href'), '/photos/1/comments/2', "should be able to pass multiple models");
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(currentRouteName(), 'photo.comment', "clicking on the link should transition to a multiple dynamic segment route");
+    assert.equal(currentURL(), '/photos/1/comments/2', "clicking on the link should transition to the right model");
   });
 });
 

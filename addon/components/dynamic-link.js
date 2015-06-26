@@ -18,6 +18,7 @@ export default Ember.Component.extend({
   // Ember link-to style attributes
   route: Ember.computed.alias('params.route'),
   model: Ember.computed.alias('params.model'),
+  models: Ember.computed.alias('params.models'),
   action: Ember.computed.alias('params.action'),
   queryParams: Ember.computed.alias('params.queryParams'),
 
@@ -25,12 +26,17 @@ export default Ember.Component.extend({
   // of a route name and then an optional model with optional query params.
   routeArguments: Ember.computed('route', 'model', 'queryParams', function() {
     var args = [this.get('route')];
+
     if (this.get('model')) {
       args.push(this.get('model'));
+    } else if (this.get('models')) {
+      args = args.concat(this.get('models'));
     }
+
     if (this.get('queryParams')) {
       args.push({ queryParams: this.get('queryParams') });
     }
+
     return args;
   }),
 
