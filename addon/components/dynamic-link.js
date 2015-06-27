@@ -18,7 +18,6 @@ export default Ember.Component.extend({
   // Ember link-to style attributes
   route: Ember.computed.alias('params.route'),
   model: Ember.computed.alias('params.model'),
-  models: Ember.computed.alias('params.models'),
   action: Ember.computed.alias('params.action'),
   queryParams: Ember.computed.alias('params.queryParams'),
 
