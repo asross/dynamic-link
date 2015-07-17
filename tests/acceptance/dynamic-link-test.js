@@ -36,7 +36,9 @@ test('vanilla dynamic link with basic parameters passed in from the controller',
 test('dynamic link that uses routes', function(assert) {
   visit('/');
 
-  controller.set('dynamicLinkParams', { route: 'photos' });
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photos' });
+  });
 
   andThen(function() {
     assert.equal(find('#dynamic-link a').attr('href'), '/photos', "href should be settable via route");
@@ -69,7 +71,9 @@ test('dynamic link that uses routes', function(assert) {
 test('dynamic link using routes with multiple dynamic segments', function(assert) {
   visit('/');
 
-  controller.set('dynamicLinkParams', { route: 'photo.comment', model: [1, { id: 2 }] });
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photo.comment', model: [1, { id: 2 }] });
+  });
 
   andThen(function() {
     assert.equal(find('#dynamic-link a').attr('href'), '/photos/1/comments/2', "should be able to pass multiple models");
@@ -86,7 +90,9 @@ test('dynamic link using routes with multiple dynamic segments', function(assert
 test('dynamic link with actions', function(assert) {
   visit('/');
 
-  controller.set('dynamicLinkParams', { action: 'toggleSomething', href: '/thingies' });
+  andThen(function() {
+    controller.set('dynamicLinkParams', { action: 'toggleSomething', href: '/thingies' });
+  });
 
   andThen(function() {
     assert.equal(find('#dynamic-link a').attr('href'), '/thingies', "link with action should still be able to have an href");
