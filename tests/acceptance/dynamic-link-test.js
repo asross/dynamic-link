@@ -23,12 +23,15 @@ test('vanilla dynamic link with basic parameters passed in from the controller',
   });
 
   andThen(function() {
-    controller.set('dynamicLinkParams', { href: '/foo', title: 'bar', className: 'baz' });
+    controller.set('dynamicLinkParams', { href: '/foo', title: 'bar', className: 'baz', rel: "nofollow", tabindex: 2, target: "_blank" });
   });
 
   andThen(function() {
     assert.equal(find('#dynamic-link a').attr('href'), '/foo', "href should be settable through params.href");
     assert.equal(find('#dynamic-link a').attr('title'), 'bar', "title should be settable through params.title");
+    assert.equal(find('#dynamic-link a').attr('rel'), 'nofollow', "rel should be settable through params.rel");
+    assert.equal(find('#dynamic-link a').attr('tabindex'), 2, "tabindex should be settable through params.tabindex");
+    assert.equal(find('#dynamic-link a').attr('target'), '_blank', "target should be settable through params.target");
     assert.ok(find('#dynamic-link a').hasClass('baz'), "class should be settable through params.className");
   });
 });

@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   tagName: 'a',
-  attributeBindings: ['href', 'target', 'title', 'rel'],
+  attributeBindings: ['href', 'target', 'title', 'rel', 'tabindex'],
   classNameBindings: ['className'],
 
   // You can either pass in the following attributes directly,
@@ -13,6 +13,7 @@ export default Ember.Component.extend({
   rel: Ember.computed.alias('params.rel'),
   title: Ember.computed.alias('params.title'),
   target: Ember.computed.alias('params.target'),
+  tabindex: Ember.computed.alias('params.tabindex'),
   className: Ember.computed.alias('params.className'),
 
   // Ember link-to style attributes
