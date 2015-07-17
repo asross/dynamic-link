@@ -1,4 +1,6 @@
 # Dynamic-link
+[![Dependency Status](https://david-dm.org/asross/dynamic-link.svg)](https://david-dm.org/asross/dynamic-link)
+[![Build Status](https://travis-ci.org/asross/dynamic-link.svg)](https://travis-ci.org/asross/dynamic-link)
 
 `dynamic-link` is an alternative to the `link-to` helper that provides more flexibility for dynamic parameters, including actions and literal hrefs.
 
