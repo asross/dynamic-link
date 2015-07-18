@@ -59,7 +59,7 @@ define('dynamic-link-demo/controllers/application', ['exports', 'ember'], functi
         var newLink = {};
         if (type === 'route') {
           newLink.route = 'about';
-          newLink.text = 'About Page';
+          newLink.text = 'About';
         } else if (type === 'action') {
           newLink.action = 'yellowAlert';
           newLink.text = 'Yellow Alert';
@@ -226,7 +226,7 @@ define('dynamic-link-demo/templates/about', ['exports'], function (exports) {
         var el2 = dom.createTextNode("Dynamic Link");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode(", a library that helps you add links in EmberJS based on computed properties.\n");
+        var el1 = dom.createTextNode(", a library that helps you define links based on custom parameters.\n");
         dom.appendChild(el0, el1);
         return el0;
       },
@@ -1378,7 +1378,7 @@ catch(err) {
 if (runningTests) {
   require("dynamic-link-demo/tests/test-helper");
 } else {
-  require("dynamic-link-demo/app")["default"].create({"name":"dynamic-link-demo","version":"0.0.0+09bbb625"});
+  require("dynamic-link-demo/app")["default"].create({"name":"dynamic-link-demo","version":"0.0.0+08cb6cd2"});
 }
 
 /* jshint ignore:end */
