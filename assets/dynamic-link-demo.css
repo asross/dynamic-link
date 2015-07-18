@@ -1,0 +1,32 @@
+.edit-nav-links {
+  padding: 1em;
+}
+
+.edit-nav-links ul {
+  padding: 0;
+  list-style: none;
+}
+
+.edit-nav-links ul li {
+  padding-bottom: 0.5em;
+}
+
+span.initial-segment {
+  display: inline-block;
+  width: 16em;
+}
+
+input.small-input {
+  width: 5em;
+}
+
+input.tiny-input {
+  width: 2em;
+}
+
+kbd input, kbd select {
+  color: #333 !important;
+  font-size: x-small !important;
+  position: relative;
+  top: -1px;
+}
