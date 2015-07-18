@@ -52,6 +52,7 @@
     "ember-cli-version-checker": "^1.0.2"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "configPath": "tests/dummy/config",
+    "demoURL": "http://asross.github.io/dynamic-link/"
   }
 }
