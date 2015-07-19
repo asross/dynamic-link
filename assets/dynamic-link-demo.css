@@ -30,3 +30,7 @@ kbd input, kbd select {
   position: relative;
   top: -1px;
 }
+
+.navbar-collapse.collapse {
+  display: block !important;
+}
