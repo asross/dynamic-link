@@ -9,21 +9,35 @@ export default Ember.Component.extend({
   // or you can pass them in nested inside the "params" hash.
   params: {},
 
+  // Only use the values inside `params` after the component is rendered
+  // (to avoid double-rendering)
+  isLoaded: false,
+
+  didInsertElement: function() {
+    Ember.run.scheduleOnce('afterRender', this, function() {
+      this.set('isLoaded', true);
+    });
+  },
+
+  _params: Ember.computed('isLoaded', 'params', function() {
+    return this.get('isLoaded') ? this.get('params') : {};
+  }),
+
   // HTML attributes -- href is defined below.
-  rel: Ember.computed.alias('params.rel'),
-  title: Ember.computed.alias('params.title'),
-  target: Ember.computed.alias('params.target'),
-  tabindex: Ember.computed.alias('params.tabindex'),
-  className: Ember.computed.alias('params.className'),
+  rel: Ember.computed.alias('_params.rel'),
+  title: Ember.computed.alias('_params.title'),
+  target: Ember.computed.alias('_params.target'),
+  tabindex: Ember.computed.alias('_params.tabindex'),
+  className: Ember.computed.alias('_params.className'),
 
   // Ember link-to style attributes
-  route: Ember.computed.alias('params.route'),
-  model: Ember.computed.alias('params.model'),
-  action: Ember.computed.alias('params.action'),
-  queryParams: Ember.computed.alias('params.queryParams'),
+  route: Ember.computed.alias('_params.route'),
+  model: Ember.computed.alias('_params.model'),
+  action: Ember.computed.alias('_params.action'),
+  queryParams: Ember.computed.alias('_params.queryParams'),
 
   // These are the arguments to be passed to `transitionToRoute`. They consist
-  // of a route name and then an optional model with optional query params.
+  // of a route name and then an optional model with optional query _params.
   routeArguments: Ember.computed('route', 'model', 'queryParams', function() {
     var args = [this.get('route')];
 
@@ -46,9 +60,9 @@ export default Ember.Component.extend({
   // If we have a literal href passed in, always defer to it.
   // If we have route parameters, try to construct the route's URL.
   // If we have an action, just '#' should do.
-  href: Ember.computed('routeArguments', 'action', 'params.href', function() {
-    if (this.get('params.href')) {
-      return this.get('params.href');
+  href: Ember.computed('routeArguments', 'action', '_params.href', function() {
+    if (this.get('_params.href')) {
+      return this.get('_params.href');
     } else if (this.get('route')) {
       var router = this.container.lookup('route:application').router;
       return router.generate.apply(router, this.get('routeArguments'));
