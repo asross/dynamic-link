@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import getOwner from 'ember-getowner-polyfill';
 
 export default Ember.Component.extend({
   tagName: 'a',
@@ -66,7 +67,7 @@ export default Ember.Component.extend({
     if (this.get('params.href')) {
       return this.get('params.href');
     } else if (this.get('route')) {
-      return this.get('_router').generate.apply(this.get('_router'), this.get('routeArguments'));
+      return this.get('_router').generate(...this.get('routeArguments'));
     } else {
       return '#';
     }
@@ -94,25 +95,29 @@ export default Ember.Component.extend({
 
   // bubble the action to wherever the link was added
   performAction: function() {
-    this.get('targetObject').send(this.get('action'));
+    var target = this.get('targetObject') || this.get('_targetObject');
+    if (target) {
+      target.send(this.get('action'));
+    }
   },
 
-  _router: Ember.computed(function() {
-    return this.container.lookup('route:application').router;
+  _route: Ember.computed(function() {
+    return getOwner(this).lookup('route:application');
   }),
+
+  _router: Ember.computed.alias('_route.router'),
 
   // have the application route transition to the location
   // specified by the parameters
   transitionRoute: function() {
-    var route = this.container.lookup('route:application');
-    route.transitionTo.apply(route, this.get('routeArguments'));
+    this.get('_route').transitionTo(...this.get('routeArguments'));
   },
 
   isActive: Ember.computed('_router.currentState', 'activeWhen', function() {
     if (this.get('activeWhen') !== undefined) {
       return this.get('activeWhen');
     } else if (this.get('route') && this.get('_router.currentState')) {
-      return this.get('_router').isActive.apply(this.get('_router'), this.get('routeArguments'));
+      return this.get('_router').isActive(...this.get('routeArguments'));
     } else {
       return false;
     }
