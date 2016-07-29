@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   tagName: 'a',
   attributeBindings: ['href', 'target', 'title', 'rel', 'tabindex'],
-  classNameBindings: ['className'],
+  classNameBindings: ['className', 'activeClassName'],
 
   // You can either pass in the following attributes directly,
   // or you can pass them in nested inside the "params" hash.
@@ -22,18 +22,34 @@ export default Ember.Component.extend({
   action: Ember.computed.alias('params.action'),
   queryParams: Ember.computed.alias('params.queryParams'),
 
+  // By default, dynamic links on active routes will have class "active", but
+  // you can reopen this and set it to blank if you don't like that behavior.
+  defaultActiveClass: 'active',
+
+  // You can set an explicit activeClass like in link-to, as well, which can
+  // also be passed in via the params hash.
+  activeClass: Ember.computed.alias('params.activeClass'),
+  activeWhen: Ember.computed.alias('params.activeWhen'),
+  activeClassName: Ember.computed('isActive', 'activeClass', 'defaultActiveClass', function() {
+    if (this.get('isActive') && this.get('activeClass') !== false) {
+      return this.get('activeClass') || this.get('defaultActiveClass');
+    }
+  }),
+
+  models: Ember.computed('model', function() {
+    if (this.get('model') instanceof Array) {
+      return this.get('model');
+    } else if (this.get('model')) {
+      return [this.get('model')];
+    } else {
+      return [];
+    }
+  }),
+
   // These are the arguments to be passed to `transitionToRoute`. They consist
   // of a route name and then an optional model with optional query params.
-  routeArguments: Ember.computed('route', 'model', 'queryParams', function() {
-    var args = [this.get('route')];
-
-    if (this.get('model')) {
-      if (this.get('model') instanceof Array) {
-        args = args.concat(this.get('model'));
-      } else {
-        args.push(this.get('model'));
-      }
-    }
+  routeArguments: Ember.computed('route', 'models', 'queryParams', function() {
+    var args = [this.get('route')].concat(this.get('models'));
 
     if (this.get('queryParams')) {
       args.push({ queryParams: this.get('queryParams') });
@@ -50,8 +66,7 @@ export default Ember.Component.extend({
     if (this.get('params.href')) {
       return this.get('params.href');
     } else if (this.get('route')) {
-      var router = this.container.lookup('route:application').router;
-      return router.generate.apply(router, this.get('routeArguments'));
+      return this.get('_router').generate.apply(this.get('_router'), this.get('routeArguments'));
     } else {
       return '#';
     }
@@ -82,10 +97,24 @@ export default Ember.Component.extend({
     this.get('targetObject').send(this.get('action'));
   },
 
+  _router: Ember.computed(function() {
+    return this.container.lookup('route:application').router;
+  }),
+
   // have the application route transition to the location
   // specified by the parameters
   transitionRoute: function() {
     var route = this.container.lookup('route:application');
     route.transitionTo.apply(route, this.get('routeArguments'));
-  }
+  },
+
+  isActive: Ember.computed('_router.currentState', 'activeWhen', function() {
+    if (this.get('activeWhen') !== undefined) {
+      return this.get('activeWhen');
+    } else if (this.get('route') && this.get('_router.currentState')) {
+      return this.get('_router').isActive.apply(this.get('_router'), this.get('routeArguments'));
+    } else {
+      return false;
+    }
+  })
 });

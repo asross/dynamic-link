@@ -133,6 +133,18 @@ or just
 <a href="/photos/1/comments/new">Add Comment</a>
 ```
 
+### Active Class
+
+Route-based `dynamic-link`s have basic support for automatically adding the `'active'` class to the `<a>` tag if their parameters match the current route. You can customize the class name by passing a string to `activeClass` or `params.activeClass`, and you can also set a default for all `dynamic-link`s by reopening the component and overriding `defaultActiveClass`. If you don't wish to apply any class at all, you can pass `activeClass=false` for a particular link or `defaultActiveClass=false` on the component to disable this behavior for all of them.
+
+If you want to customize how `dynamic-link` decides whether the active class should be added, you can pass a boolean or a computed property to `activeWhen` or `params.activeWhen`:
+
+```hbs
+{{#dynamic-link activeWhen=sortDescending activeClass='highlight' action=makeSortAscending}}
+  Sort ascending
+{{/dynamic-link}}
+```
+
 ## Running Tests
 
 * `git clone git@github.com:asross/dynamic-link.git`
