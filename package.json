@@ -1,6 +1,6 @@
 {
   "name": "dynamic-link",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Ember CLI addon for the dynamic-link component, a more flexible version of link-to.",
   "directories": {
     "doc": "doc",
@@ -39,9 +39,10 @@
     "ember-cli-sri": "^1.2.0",
     "ember-cli-uglify": "^1.2.0",
     "ember-data": "1.13.15",
+    "ember-disable-prototype-extensions": "^1.0.0",
     "ember-disable-proxy-controllers": "^1.0.1",
     "ember-export-application-global": "^1.0.4",
-    "ember-disable-prototype-extensions": "^1.0.0",
+    "ember-getowner-polyfill": "1.0.1",
     "ember-try": "~0.0.8"
   },
   "keywords": [

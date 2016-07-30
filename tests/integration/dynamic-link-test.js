@@ -109,3 +109,83 @@ test('dynamic link with actions', function(assert) {
     assert.equal(currentRouteName(), "index", "clicking on an action link should not change the route");
   });
 });
+
+test('dynamic link with activeWhen and activeClass', function(assert) {
+  visit('/');
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photos', activeWhen: true, activeClass: 'hyperactive' });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view hyperactive', 'active link should have active class');
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photos', activeWhen: true, activeClass: false });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'active link with activeClass = false should not have class name');
+  });
+});
+
+test('dynamic link that autocomputes isActive from route', function(assert) {
+  visit('/');
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photos' });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(currentRouteName(), 'photos.index', "clicking on the link should transition to the new route");
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view active', 'active link should have active class');
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photo', model: 1 });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(currentRouteName(), 'photo.index', "clicking on the link should transition to the new route");
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view active', 'active link should have active class');
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photo', model: 2 });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photo.comment', model: [1, { id: 2 }] });
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view active', 'active link should have active class');
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams', { route: 'photo.comment', model: [1, { id: 3 }] });
+  });
+
+  andThen(function() {
+    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+  });
+});
