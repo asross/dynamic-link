@@ -1,6 +1,6 @@
 # Dynamic-link
 [![Dependency Status](https://david-dm.org/asross/dynamic-link.svg)](https://david-dm.org/asross/dynamic-link)
-[![Build Status](https://travis-ci.org/asross/dynamic-link.svg)](https://travis-ci.org/asross/dynamic-link)
+[![Build Status](https://api.travis-ci.org/asross/dynamic-link.svg?branch=master)](https://travis-ci.org/asross/dynamic-link)
 
 Demo: [http://asross.github.io/dynamic-link/](http://asross.github.io/dynamic-link/)
 
