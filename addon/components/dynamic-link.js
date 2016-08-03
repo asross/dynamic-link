@@ -73,24 +73,21 @@ export default Ember.Component.extend({
     }
   }),
 
-  // returning true from this method causes the default click behavior
-  // to apply. For ctrl-clicks and for basic literal hrefs, we should
-  // return true to preserve normal behavior. For actions and route
-  // transitions, we should return false because Ember will handle it.
+  // returning true to allow default click behavior to bubble up through
+  // the application. preventDefault is used to prevent route transitions
+  // and actions from refreshing the page.
   click: function(event) {
-    if (event.metaKey || event.ctrlKey) {
-      return true;
-    } else if (this.get('action')) {
-      this.performAction();
-      return false;
-    } else if (this.get('route')) {
-      this.transitionRoute();
-      return false;
-    } else {
-      return true;
+    if (!event.metaKey && !event.ctrlKey) {
+      if (this.get('action')) {
+        event.preventDefault();
+        this.performAction();
+      } else if (this.get('route')) {
+        event.preventDefault();
+        this.transitionRoute();
+      }
     }
-    // TODO: consider returning true if target="_blank",
-    // even if there is an action or route?
+
+    return true;
   },
 
   // bubble the action to wherever the link was added
