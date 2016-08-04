@@ -37,6 +37,11 @@ export default Ember.Component.extend({
     }
   }),
 
+  // You can control whether or not the click event bubbles up through the
+  // component by setting this property directly or by setting it in the
+  // params hash. If no value is set, all clicks will bubble by default.
+  bubbles: Ember.computed.alias('params.bubbles'),
+
   models: Ember.computed('model', function() {
     if (this.get('model') instanceof Array) {
       return this.get('model');
@@ -73,9 +78,9 @@ export default Ember.Component.extend({
     }
   }),
 
-  // returning true to allow default click behavior to bubble up through
-  // the application. preventDefault is used to prevent route transitions
-  // and actions from refreshing the page.
+  // Use prevent default to keep route transitions and actions from
+  // refreshing the page. Allows click behavior to bubble up if allowed
+  // by the bubbles property
   click: function(event) {
     if (!event.metaKey && !event.ctrlKey) {
       if (this.get('action')) {
@@ -87,7 +92,7 @@ export default Ember.Component.extend({
       }
     }
 
-    return true;
+    return typeof this.get('bubbles') !== 'undefined' ? this.get('bubbles') : true;
   },
 
   // bubble the action to wherever the link was added

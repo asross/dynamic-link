@@ -189,3 +189,24 @@ test('dynamic link that autocomputes isActive from route', function(assert) {
     assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
   });
 });
+
+test('dynamic link that sets bubbles param', function(assert) {
+  visit('/');
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(controller.get('bubbles'), true, 'default setting allows click to bubble');
+  });
+
+  andThen(function() {
+    controller.set('bubbles', false);
+    controller.set('dynamicLinkParams', { bubbles: false });
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(controller.get('bubbles'), false, 'setting bubbles param to false stops click propagation');
+  });
+});
