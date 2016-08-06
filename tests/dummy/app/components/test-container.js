@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   click() {
-    this.set('bubbles', true);
+    this.set('somethingElse', !this.get('somethingElse'));
   },
 
   actions: {
