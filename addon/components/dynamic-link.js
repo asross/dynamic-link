@@ -82,17 +82,17 @@ export default Ember.Component.extend({
   // refreshing the page. Allows click behavior to bubble up if allowed
   // by the bubbles property
   click: function(event) {
-    if (!event.metaKey && !event.ctrlKey) {
+    if ((this.get('action') || this.get('route')) && !(event.metaKey || event.ctrlKey)) {
+      event.preventDefault();
       if (this.get('action')) {
-        event.preventDefault();
         this.performAction();
-      } else if (this.get('route')) {
-        event.preventDefault();
+      } else {
         this.transitionRoute();
       }
+      return this.get('bubbles') !== false;
+    } else {
+      return true;
     }
-
-    return typeof this.get('bubbles') !== 'undefined' ? this.get('bubbles') : true;
   },
 
   // bubble the action to wherever the link was added

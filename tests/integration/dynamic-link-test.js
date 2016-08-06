@@ -193,20 +193,38 @@ test('dynamic link that autocomputes isActive from route', function(assert) {
 test('dynamic link that sets bubbles param', function(assert) {
   visit('/');
 
-  click('#dynamic-link a');
-
   andThen(function() {
-    assert.equal(controller.get('bubbles'), true, 'default setting allows click to bubble');
-  });
-
-  andThen(function() {
-    controller.set('bubbles', false);
-    controller.set('dynamicLinkParams', { bubbles: false });
+    controller.set('dynamicLinkParams', { action: 'toggleSomething', href: '/thingies' });
+    assert.equal(controller.get('something'), false, 'sanity check 1');
+    assert.equal(controller.get('somethingElse'), false, 'sanity check 2');
   });
 
   click('#dynamic-link a');
 
   andThen(function() {
-    assert.equal(controller.get('bubbles'), false, 'setting bubbles param to false stops click propagation');
+    assert.equal(controller.get('something'), true, 'click event triggers action');
+    assert.equal(controller.get('somethingElse'), true, 'click event still bubbles');
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams.bubbles', false);
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(controller.get('something'), false, 'sanity check 3');
+    assert.equal(controller.get('somethingElse'), true, 'click event does not bubble with bubbles=false');
+  });
+
+  andThen(function() {
+    controller.set('dynamicLinkParams.bubbles', true);
+  });
+
+  click('#dynamic-link a');
+
+  andThen(function() {
+    assert.equal(controller.get('something'), true, 'sanity check 4');
+    assert.equal(controller.get('somethingElse'), false, 'click event bubbles with bubbles=true');
   });
 });
