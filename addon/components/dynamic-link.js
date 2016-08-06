@@ -37,6 +37,11 @@ export default Ember.Component.extend({
     }
   }),
 
+  // You can control whether or not the click event bubbles up through the
+  // component by setting this property directly or by setting it in the
+  // params hash. If no value is set, all clicks will bubble by default.
+  bubbles: Ember.computed.alias('params.bubbles'),
+
   models: Ember.computed('model', function() {
     if (this.get('model') instanceof Array) {
       return this.get('model');
@@ -73,24 +78,21 @@ export default Ember.Component.extend({
     }
   }),
 
-  // returning true from this method causes the default click behavior
-  // to apply. For ctrl-clicks and for basic literal hrefs, we should
-  // return true to preserve normal behavior. For actions and route
-  // transitions, we should return false because Ember will handle it.
+  // Use prevent default to keep route transitions and actions from
+  // refreshing the page. Allows click behavior to bubble up if allowed
+  // by the bubbles property
   click: function(event) {
-    if (event.metaKey || event.ctrlKey) {
-      return true;
-    } else if (this.get('action')) {
-      this.performAction();
-      return false;
-    } else if (this.get('route')) {
-      this.transitionRoute();
-      return false;
-    } else {
-      return true;
+    if (!event.metaKey && !event.ctrlKey) {
+      if (this.get('action')) {
+        event.preventDefault();
+        this.performAction();
+      } else if (this.get('route')) {
+        event.preventDefault();
+        this.transitionRoute();
+      }
     }
-    // TODO: consider returning true if target="_blank",
-    // even if there is an action or route?
+
+    return typeof this.get('bubbles') !== 'undefined' ? this.get('bubbles') : true;
   },
 
   // bubble the action to wherever the link was added
