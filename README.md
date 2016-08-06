@@ -84,9 +84,12 @@ if `currentUser` is present (with an `id` of 1), or else
 <a href='/sign_in?foo=bar'>Sign In</a>
 ```
 
-Clicking the route-based links will transition the route without refreshing the
-page, while clicking action links will bubble actions properly. Literal links
-will work normally.
+Clicking a route-based link will transition the route without refreshing the
+page, while clicking an action link will send actions to its parent. Literal
+links will work normally.
+
+Click events will bubble up by default, but if you want to disable this, you
+can pass `false` for `bubbles` or `params.bubbles`.
 
 ### Passing Params Directly
 
