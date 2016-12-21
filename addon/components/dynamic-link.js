@@ -84,7 +84,7 @@ export default Ember.Component.extend({
       if (this.get('_routing')) {
         return this.get('_routing').generateURL(...this.get('routingArguments'));
       } else {
-        return this.get('_router').generateURL(...this.get('routeArguments'));
+        return this.get('_router').generate(...this.get('routeArguments'));
       }
     } else {
       return '#';
