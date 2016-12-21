@@ -64,6 +64,15 @@ export default Ember.Component.extend({
     return args;
   }),
 
+  // Arguments suited for routing service
+  routingArguments: Ember.computed('route', 'models', 'queryParams', function() {
+    return [
+      this.get('route'),
+      this.get('models'),
+      this.get('queryParams') || {}
+    ];
+  }),
+
   // The href attribute of the link takes one of three forms.
   // If we have a literal href passed in, always defer to it.
   // If we have route parameters, try to construct the route's URL.
@@ -72,7 +81,11 @@ export default Ember.Component.extend({
     if (this.get('params.href')) {
       return this.get('params.href');
     } else if (this.get('route')) {
-      return this.get('_router').generate(...this.get('routeArguments'));
+      if (this.get('_routing')) {
+        return this.get('_routing').generateURL(...this.get('routingArguments'));
+      } else {
+        return this.get('_router').generateURL(...this.get('routeArguments'));
+      }
     } else {
       return '#';
     }
@@ -107,19 +120,33 @@ export default Ember.Component.extend({
     return getOwner(this).lookup('route:application');
   }),
 
-  _router: Ember.computed.alias('_route.router'),
+  _router: Ember.computed.readOnly('_route.router'),
+
+  _routing: Ember.inject.service(),
 
   // have the application route transition to the location
   // specified by the parameters
   transitionRoute: function() {
-    this.get('_route').transitionTo(...this.get('routeArguments'));
+    let routing = this.get('_routing');
+    if (routing) {
+      routing.transitionTo(...this.get('routingArguments'));
+    } else {
+      this.get('_router').transitionTo(...this.get('routeArguments'));
+    }
   },
 
   isActive: Ember.computed('_router.currentState', 'activeWhen', function() {
     if (this.get('activeWhen') !== undefined) {
       return this.get('activeWhen');
     } else if (this.get('route') && this.get('_router.currentState')) {
-      return this.get('_router').isActive(...this.get('routeArguments'));
+      let routing = this.get('_routing');
+      if (routing) {
+        let currentState = Ember.get(this, '_routing.currentState');
+        if (!currentState) { return false; }
+        return routing.isActiveForRoute(this.get('models'), this.get('queryParams') || {}, this.get('route'), currentState, false);
+      } else {
+        return this.get('_router').isActive(...this.get('routeArguments'));
+      }
     } else {
       return false;
     }
