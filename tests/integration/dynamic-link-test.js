@@ -118,7 +118,7 @@ test('dynamic link with activeWhen and activeClass', function(assert) {
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view hyperactive', 'active link should have active class');
+    assert.ok(find('#dynamic-link a').hasClass('hyperactive'), 'active link should have active class');
   });
 
   andThen(function() {
@@ -126,7 +126,7 @@ test('dynamic link with activeWhen and activeClass', function(assert) {
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'active link with activeClass = false should not have class name');
+    assert.notOk(find('#dynamic-link a').hasClass('hyperactive'), 'active link with activeClass = false should not have class name');
   });
 });
 
@@ -138,14 +138,14 @@ test('dynamic link that autocomputes isActive from route', function(assert) {
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+    assert.notOk(find('#dynamic-link a').hasClass('active'), 'inactive link should not have active class');
   });
 
   click('#dynamic-link a');
 
   andThen(function() {
     assert.equal(currentRouteName(), 'photos.index', "clicking on the link should transition to the new route");
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view active', 'active link should have active class');
+    assert.ok(find('#dynamic-link a').hasClass('active'), 'active link should have active class');
   });
 
   andThen(function() {
@@ -153,14 +153,14 @@ test('dynamic link that autocomputes isActive from route', function(assert) {
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+    assert.notOk(find('#dynamic-link a').hasClass('active'), 'inactive link should not have active class');
   });
 
   click('#dynamic-link a');
 
   andThen(function() {
     assert.equal(currentRouteName(), 'photo.index', "clicking on the link should transition to the new route");
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view active', 'active link should have active class');
+    assert.ok(find('#dynamic-link a').hasClass('active'), 'active link should have active class');
   });
 
   andThen(function() {
@@ -168,7 +168,7 @@ test('dynamic link that autocomputes isActive from route', function(assert) {
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+    assert.notOk(find('#dynamic-link a').hasClass('active'), 'inactive link should not have active class');
   });
 
   andThen(function() {
@@ -178,7 +178,7 @@ test('dynamic link that autocomputes isActive from route', function(assert) {
   click('#dynamic-link a');
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view active', 'active link should have active class');
+    assert.ok(find('#dynamic-link a').hasClass('active'), 'active link should have active class');
   });
 
   andThen(function() {
@@ -186,7 +186,7 @@ test('dynamic link that autocomputes isActive from route', function(assert) {
   });
 
   andThen(function() {
-    assert.equal(find('#dynamic-link a').attr('class'), 'ember-view', 'inactive link should not have active class');
+    assert.notOk(find('#dynamic-link a').hasClass('active'), 'inactive link should not have active class');
   });
 });
 
