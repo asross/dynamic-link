@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import getOwner from 'ember-getowner-polyfill';
 
 export default Ember.Component.extend({
   tagName: 'a',
@@ -117,7 +116,7 @@ export default Ember.Component.extend({
   },
 
   _route: Ember.computed(function() {
-    return getOwner(this).lookup('route:application');
+    return Ember.getOwner(this).lookup('route:application');
   }),
 
   _router: Ember.computed.readOnly('_route.router'),
