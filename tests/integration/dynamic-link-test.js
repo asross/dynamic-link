@@ -5,12 +5,12 @@ import startApp from '../helpers/start-app';
 var App, controller;
 
 module('Dynamic link', {
-  setup: function() {
+  beforeEach: function() {
     App = startApp();
     controller = App.__container__.lookup('controller:application');
   },
 
-  teardown: function() {
+  afterEach: function() {
     Ember.run(App, App.destroy);
   }
 });
