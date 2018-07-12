@@ -3,7 +3,10 @@ const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 
 module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
-    // Add options here
+    // Include babel polyfill to fix PhantomJS missing some ES6 features
+    'ember-cli-babel': {
+      includePolyfill: true
+    }
   });
 
   /*
