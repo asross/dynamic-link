@@ -119,7 +119,9 @@ export default Ember.Component.extend({
     return Ember.getOwner(this).lookup('route:application');
   }),
 
-  _router: Ember.computed.readOnly('_route.router'),
+  _router: Ember.computed('_route._router', '_route.router', function() {
+    return this.get('_route._router') || this.get('_route.router');
+  }),
 
   _routing: Ember.inject.service(),
 
