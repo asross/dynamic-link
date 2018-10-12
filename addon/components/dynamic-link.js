@@ -109,7 +109,7 @@ export default Ember.Component.extend({
 
   // bubble the action to wherever the link was added
   performAction: function() {
-    var target = this.get('targetObject') || this.get('_targetObject');
+    var target = this.get('_targetObject') || this.get('targetObject');
     if (target) {
       target.send(this.get('action'));
     }
